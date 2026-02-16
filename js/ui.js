@@ -14,19 +14,19 @@ var UI = {
     ctx.fillStyle = '#aaaacc';
     ctx.fillText('LEVEL ' + level + '  WAVE ' + wave, 400, 30);
 
-    // Lives as ship icons
+    // Accuracy indicator (replaces lives)
     ctx.textAlign = 'right';
-    for (var i = 0; i < player.lives; i++) {
-      var lx = 770 - i * 30;
-      var ly = 25;
-      ctx.fillStyle = '#00d4ff';
-      ctx.beginPath();
-      ctx.moveTo(lx, ly - 10);
-      ctx.lineTo(lx - 8, ly + 6);
-      ctx.lineTo(lx + 8, ly + 6);
-      ctx.closePath();
-      ctx.fill();
-    }
+    ctx.font = 'bold 18px monospace';
+    var acc = player.accuracy;
+    if (acc >= 90) ctx.fillStyle = '#00ff66';
+    else if (acc >= 70) ctx.fillStyle = '#ffcc00';
+    else ctx.fillStyle = '#ff6666';
+    ctx.fillText(acc + '% ACCURACY', 780, 28);
+    
+    // Problems solved
+    ctx.font = '14px monospace';
+    ctx.fillStyle = '#8888aa';
+    ctx.fillText(player.firstTryCorrect + '/' + player.totalProblems + ' first try', 780, 48);
 
     // Combo display
     if (player.combo >= 3) {
@@ -41,7 +41,7 @@ var UI = {
         comboText = player.combo + 'x UNSTOPPABLE!';
       } else {
         ctx.fillStyle = '#ffcc00';
-        comboText = player.combo + 'x AWESOME!';
+        comboText = player.combo + 'x STREAK!';
       }
       ctx.fillText(comboText, 400, 55);
     }
@@ -70,7 +70,7 @@ var UI = {
       ctx.fillStyle = '#556677';
       ctx.font = '18px monospace';
       ctx.textAlign = 'center';
-      ctx.fillText('Waiting for enemies...', 400, 583);
+      ctx.fillText('Wave complete!', 400, 583);
     }
   },
 
@@ -81,39 +81,40 @@ var UI = {
     ctx.fillStyle = '#00d4ff';
     ctx.font = 'bold 56px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('MATH COMBAT', 400, 180);
+    ctx.fillText('MATH COMBAT', 400, 160);
     ctx.shadowBlur = 0;
 
     // Subtitle
     ctx.fillStyle = '#ff3366';
     ctx.font = 'bold 20px monospace';
-    ctx.fillText('DEFEND EARTH WITH MATH!', 400, 225);
+    ctx.fillText('LEARN MULTIPLICATION!', 400, 200);
 
     // Decorative ship
     ctx.fillStyle = '#00d4ff';
     ctx.beginPath();
-    ctx.moveTo(400, 275);
-    ctx.lineTo(370, 325);
-    ctx.lineTo(430, 325);
+    ctx.moveTo(400, 245);
+    ctx.lineTo(370, 295);
+    ctx.lineTo(430, 295);
     ctx.closePath();
     ctx.fill();
     ctx.fillStyle = '#0088cc';
     ctx.beginPath();
-    ctx.moveTo(400, 285);
-    ctx.lineTo(380, 315);
-    ctx.lineTo(420, 315);
+    ctx.moveTo(400, 255);
+    ctx.lineTo(380, 285);
+    ctx.lineTo(420, 285);
     ctx.closePath();
     ctx.fill();
 
     // Instructions
     ctx.fillStyle = '#8888aa';
     ctx.font = '16px monospace';
-    ctx.fillText('Type the answer to destroy aliens!', 400, 370);
-    ctx.fillStyle = '#ff6666';
-    ctx.fillText('Wrong answers make aliens jump closer!', 400, 395);
+    ctx.fillText('Type the answer to destroy aliens!', 400, 345);
+    ctx.fillStyle = '#66dd66';
+    ctx.fillText('No rush - take your time to think!', 400, 370);
+    ctx.fillStyle = '#ffaa66';
+    ctx.fillText('Wrong answers teach you HOW to solve it', 400, 395);
     ctx.fillStyle = '#8888aa';
-    ctx.fillText('TAB = switch targets    SPACE = pause', 400, 425);
-    ctx.fillText('BACKSPACE = correct    ENTER = submit', 400, 450);
+    ctx.fillText('TAB = switch targets    SPACE = pause', 400, 430);
 
     // Blinking start prompt
     var blink = Math.sin(Date.now() / 300) * 0.5 + 0.5;
@@ -128,33 +129,34 @@ var UI = {
     ctx.fillRect(0, 0, 800, 600);
 
     // Game Over text
-    ctx.shadowColor = '#ff3366';
+    ctx.shadowColor = '#00d4ff';
     ctx.shadowBlur = 15;
-    ctx.fillStyle = '#ff3366';
+    ctx.fillStyle = '#00d4ff';
     ctx.font = 'bold 52px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('GAME OVER', 400, 200);
+    ctx.fillText('GREAT JOB!', 400, 180);
     ctx.shadowBlur = 0;
 
-    // Final score
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 30px monospace';
-    ctx.fillText('FINAL SCORE: ' + player.score, 400, 280);
-
     // Stats
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 28px monospace';
+    ctx.fillText('FINAL SCORE: ' + player.score, 400, 250);
+
     ctx.fillStyle = '#ffcc00';
     ctx.font = '22px monospace';
-    ctx.fillText('Best Combo: ' + player.bestCombo + 'x', 400, 330);
+    ctx.fillText('Accuracy: ' + player.accuracy + '%', 400, 300);
+    ctx.fillText('First Try: ' + player.firstTryCorrect + '/' + player.totalProblems, 400, 335);
+    ctx.fillText('Best Streak: ' + player.bestCombo + 'x', 400, 370);
 
     // Restart prompt
     var blink = Math.sin(Date.now() / 300) * 0.5 + 0.5;
     ctx.fillStyle = 'rgba(0, 212, 255, ' + (0.5 + blink * 0.5) + ')';
     ctx.font = 'bold 22px monospace';
-    ctx.fillText('PRESS ENTER TO PLAY AGAIN', 400, 430);
+    ctx.fillText('PRESS ENTER TO PLAY AGAIN', 400, 450);
   },
 
-  drawLevelComplete: function (ctx, level) {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  drawLevelComplete: function (ctx, level, player) {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
     ctx.fillRect(0, 0, 800, 600);
 
     ctx.shadowColor = '#ffcc00';
@@ -162,12 +164,95 @@ var UI = {
     ctx.fillStyle = '#ffcc00';
     ctx.font = 'bold 44px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText('LEVEL ' + level + ' COMPLETE!', 400, 270);
+    ctx.fillText('LEVEL ' + level + ' COMPLETE!', 400, 230);
     ctx.shadowBlur = 0;
 
+    // Show accuracy for this session
     ctx.fillStyle = '#ffffff';
-    ctx.font = '22px monospace';
-    ctx.fillText('Get ready for Level ' + (level + 1) + '...', 400, 330);
+    ctx.font = '24px monospace';
+    ctx.fillText('Accuracy: ' + player.accuracy + '%', 400, 290);
+    
+    var firstTry = player.firstTryCorrect;
+    var total = player.totalProblems;
+    ctx.fillStyle = '#aaddaa';
+    ctx.font = '20px monospace';
+    ctx.fillText(firstTry + ' of ' + total + ' correct on first try!', 400, 330);
+
+    ctx.fillStyle = '#aaaacc';
+    ctx.fillText('Get ready for Level ' + (level + 1) + '...', 400, 380);
+  },
+
+  drawLesson: function (ctx, problem, wrongAnswer, lesson) {
+    // Dark overlay
+    ctx.fillStyle = 'rgba(0, 0, 20, 0.92)';
+    ctx.fillRect(0, 0, 800, 600);
+
+    // Box
+    ctx.fillStyle = 'rgba(20, 20, 60, 0.95)';
+    ctx.strokeStyle = '#ff6666';
+    ctx.lineWidth = 3;
+    ctx.fillRect(100, 80, 600, 440);
+    ctx.strokeRect(100, 80, 600, 440);
+
+    // Header - Not quite!
+    ctx.fillStyle = '#ff6666';
+    ctx.font = 'bold 32px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('✗ NOT QUITE!', 400, 130);
+
+    // Show the problem and wrong answer
+    if (problem) {
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 28px monospace';
+      ctx.fillText(problem.text + ' = ?', 400, 180);
+      
+      ctx.fillStyle = '#ff8888';
+      ctx.font = '20px monospace';
+      ctx.fillText('You said: ' + wrongAnswer, 400, 215);
+    }
+
+    // Divider
+    ctx.strokeStyle = '#444488';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(150, 240);
+    ctx.lineTo(650, 240);
+    ctx.stroke();
+
+    // Lesson content
+    if (lesson) {
+      // Tip title
+      ctx.fillStyle = '#ffcc00';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText('💡 ' + lesson.title, 400, 280);
+
+      // Tip explanation
+      ctx.fillStyle = '#aaddff';
+      ctx.font = '18px monospace';
+      ctx.fillText(lesson.tip, 400, 315);
+
+      // Steps
+      ctx.fillStyle = '#ffffff';
+      ctx.font = lesson.stepsAreArray ? '16px monospace' : '20px monospace';
+      var stepY = 355;
+      var stepSpacing = lesson.stepsAreArray ? 22 : 28;
+      
+      for (var i = 0; i < lesson.steps.length && i < 8; i++) {
+        ctx.fillText(lesson.steps[i], 400, stepY);
+        stepY += stepSpacing;
+      }
+
+      // Final answer
+      ctx.fillStyle = '#00ff66';
+      ctx.font = 'bold 26px monospace';
+      ctx.fillText(lesson.answer, 400, Math.min(stepY + 15, 470));
+    }
+
+    // Continue prompt
+    var blink = Math.sin(Date.now() / 300) * 0.5 + 0.5;
+    ctx.fillStyle = 'rgba(0, 212, 255, ' + (0.5 + blink * 0.5) + ')';
+    ctx.font = 'bold 18px monospace';
+    ctx.fillText('[ Press ENTER to try again ]', 400, 505);
   },
 
   addComboText: function (text, x, y) {

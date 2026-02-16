@@ -34,19 +34,19 @@ const EnemyManager = {
   spawnTimer: 0,
   spawnQueue: 0,
 
-  // Slow descent - accuracy matters more than speed!
-  // Wrong answers make enemies jump down 80px
+  // LEARNING MODE: No movement! Accuracy only.
+  // Wrong answers trigger learning explanations
   levelConfig: [
-    { speed: 8, count: 3 },
-    { speed: 8, count: 4 },
-    { speed: 10, count: 5 },
-    { speed: 10, count: 5 },
-    { speed: 12, count: 6 },
-    { speed: 12, count: 5 },
-    { speed: 12, count: 5 },
-    { speed: 14, count: 7 },
-    { speed: 10, count: 5 },
-    { speed: 16, count: 8 },
+    { speed: 0, count: 4 },
+    { speed: 0, count: 5 },
+    { speed: 0, count: 5 },
+    { speed: 0, count: 6 },
+    { speed: 0, count: 6 },
+    { speed: 0, count: 6 },
+    { speed: 0, count: 7 },
+    { speed: 0, count: 7 },
+    { speed: 0, count: 6 },
+    { speed: 0, count: 8 },
   ],
 
   reset() {
@@ -62,26 +62,53 @@ const EnemyManager = {
   startWave() {
     this.wave++;
     var config = this.levelConfig[Math.min(this.level - 1, this.levelConfig.length - 1)];
-    this.spawnQueue = config.count;
     this.waveEnemies = config.count;
     this.waveDefeated = 0;
+    this.spawnQueue = 0;
     this.spawnTimer = 0;
+    
+    // Spawn all enemies immediately in a grid formation
+    this.spawnAllEnemies(config.count);
+  },
+
+  spawnAllEnemies(count) {
+    // Arrange enemies in rows
+    var cols = Math.min(count, 4);
+    var rows = Math.ceil(count / cols);
+    var spacingX = 160;
+    var spacingY = 100;
+    var startX = 400 - ((cols - 1) * spacingX) / 2;
+    var startY = 80;
+
+    var index = 0;
+    for (var row = 0; row < rows && index < count; row++) {
+      var colsInRow = Math.min(cols, count - index);
+      var rowStartX = 400 - ((colsInRow - 1) * spacingX) / 2;
+      
+      for (var col = 0; col < colsInRow && index < count; col++) {
+        var x = rowStartX + col * spacingX;
+        var y = startY + row * spacingY;
+        var problem = MathEngine.generate(this.level);
+        var enemy = new Enemy(x, y, problem, 0);
+        this.enemies.push(enemy);
+        index++;
+      }
+    }
+    
+    // Target the first enemy
+    if (this.enemies.length > 0) {
+      this.enemies[0].targeted = true;
+    }
   },
 
   update(dt) {
-    if (this.spawnQueue > 0) {
-      this.spawnTimer -= dt;
-      if (this.spawnTimer <= 0) {
-        this.spawnOne();
-        this.spawnQueue--;
-        this.spawnTimer = 1.2;
-      }
-    }
-
+    // No spawning needed - all enemies spawn at wave start
+    
     for (var i = 0; i < this.enemies.length; i++) {
       this.enemies[i].update(dt);
     }
 
+    // Ensure something is targeted
     var targeted = null;
     for (var i = 0; i < this.enemies.length; i++) {
       if (this.enemies[i].targeted && this.enemies[i].alive) {
@@ -92,18 +119,9 @@ const EnemyManager = {
     if (!targeted) {
       var alive = this.enemies.filter(function (e) { return e.alive; });
       if (alive.length > 0) {
-        alive.sort(function (a, b) { return b.y - a.y; });
         alive[0].targeted = true;
       }
     }
-  },
-
-  spawnOne() {
-    var config = this.levelConfig[Math.min(this.level - 1, this.levelConfig.length - 1)];
-    var problem = MathEngine.generate(this.level);
-    var x = 80 + Math.random() * 640;
-    var enemy = new Enemy(x, -40, problem, config.speed);
-    this.enemies.push(enemy);
   },
 
   getTargeted() {
