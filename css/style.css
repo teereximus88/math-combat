@@ -1,0 +1,21 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#gameCanvas {
+  border: 2px solid #1a1a3a;
+  border-radius: 4px;
+  box-shadow: 0 0 40px rgba(0, 100, 255, 0.2);
+  cursor: none;
+}
