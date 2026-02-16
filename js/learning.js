@@ -59,48 +59,45 @@ const Learning = {
       title: 'Think Backwards!',
       tip: divisor + ' times WHAT equals ' + dividend + '?',
       steps: this.divisionSteps(divisor, answer),
-      answer: dividend + ' ÷ ' + divisor + ' = ' + answer
+      answer: 'Try again!'
     };
   },
 
   divisionSteps(divisor, answer) {
     const steps = [];
-    for (let i = 1; i <= answer; i++) {
+    // Show some of the times table but stop before the answer
+    const showUpTo = Math.min(answer - 1, 4);
+    for (let i = 1; i <= showUpTo; i++) {
       const product = divisor * i;
-      const marker = (i === answer) ? ' ← Found it!' : '';
-      steps.push(divisor + ' × ' + i + ' = ' + product + marker);
+      steps.push(divisor + ' × ' + i + ' = ' + product);
     }
-    // Only show last few steps if too many
-    if (steps.length > 6) {
-      return ['...', ...steps.slice(-4)];
-    }
+    steps.push('...');
+    steps.push(divisor + ' × ? = ???');
     return steps;
   },
 
   skipCounting(a, b, answer) {
+    // Show the pattern but let them figure out the answer
     const counts = [];
-    for (let i = 1; i <= a; i++) {
+    for (let i = 1; i <= Math.min(a - 1, 5); i++) {
       counts.push(b * i);
     }
-    
-    // Format with position markers
-    const countStr = counts.join(', ');
-    const positions = counts.map((_, i) => this.ordinal(i + 1));
+    counts.push('?'); // They figure out the last one
     
     return {
       title: 'Skip Count by ' + b + '!',
-      tip: 'Count by ' + b + 's until you reach the ' + this.ordinal(a) + ' number:',
+      tip: 'Count by ' + b + 's to find the ' + this.ordinal(a) + ' number:',
       steps: [
-        countStr,
+        counts.join(', '),
         '',
-        'The ' + this.ordinal(a) + ' number is ' + answer + '!'
+        'What comes next?'
       ],
-      answer: a + ' × ' + b + ' = ' + answer
+      answer: 'Try again!'
     };
   },
 
   breakApart(a, b, answer) {
-    // Break the larger number into 5 + remainder or 10 - remainder
+    // Break the larger number into 5 + remainder
     let part1, part2;
     if (b > 5) {
       part1 = 5;
@@ -119,35 +116,33 @@ const Learning = {
       steps: [
         a + ' × ' + part1 + ' = ' + result1,
         a + ' × ' + part2 + ' = ' + result2,
-        result1 + ' + ' + result2 + ' = ' + answer
+        '',
+        'Now add them together!'
       ],
-      answer: a + ' × ' + b + ' = ' + answer
+      answer: 'Try again!'
     };
   },
 
   useTens(a, b, answer) {
-    let ten, other, mult;
+    let other;
     if (a === 9) {
-      ten = 10;
       other = b;
-      mult = a;
     } else {
-      ten = 10;
       other = a;
-      mult = b;
     }
     
-    const tenResult = ten * other;
+    const tenResult = 10 * other;
     
     return {
       title: 'Use Tens!',
       tip: '9 is almost 10, so:',
       steps: [
         '10 × ' + other + ' = ' + tenResult,
-        'Subtract one ' + other + ':',
-        tenResult + ' - ' + other + ' = ' + answer
+        '',
+        'Now subtract one ' + other + '!',
+        tenResult + ' - ' + other + ' = ?'
       ],
-      answer: a + ' × ' + b + ' = ' + answer
+      answer: 'Try again!'
     };
   },
 
@@ -163,7 +158,7 @@ const Learning = {
       tip: a + ' rows of ' + b + ':',
       steps: rows,
       stepsAreArray: true,
-      answer: 'Count them all: ' + answer + '!'
+      answer: 'Count them all!'
     };
   },
 

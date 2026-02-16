@@ -35,18 +35,19 @@ const EnemyManager = {
   spawnQueue: 0,
 
   // LEARNING MODE: No movement! Accuracy only.
-  // Wrong answers trigger learning explanations
+  // More enemies as levels progress
   levelConfig: [
-    { speed: 0, count: 4 },
-    { speed: 0, count: 5 },
-    { speed: 0, count: 5 },
-    { speed: 0, count: 6 },
-    { speed: 0, count: 6 },
-    { speed: 0, count: 6 },
-    { speed: 0, count: 7 },
-    { speed: 0, count: 7 },
-    { speed: 0, count: 6 },
-    { speed: 0, count: 8 },
+    { speed: 0, count: 3 },   // Level 1: Easy start
+    { speed: 0, count: 4 },   // Level 2
+    { speed: 0, count: 4 },   // Level 3
+    { speed: 0, count: 5 },   // Level 4
+    { speed: 0, count: 5 },   // Level 5
+    { speed: 0, count: 6 },   // Level 6: Getting harder
+    { speed: 0, count: 6 },   // Level 7
+    { speed: 0, count: 7 },   // Level 8
+    { speed: 0, count: 6 },   // Level 9: Division intro
+    { speed: 0, count: 8 },   // Level 10: Final challenge
+    { speed: 0, count: 8 },   // Level 11+
   ],
 
   reset() {
