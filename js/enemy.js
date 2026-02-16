@@ -34,17 +34,19 @@ const EnemyManager = {
   spawnTimer: 0,
   spawnQueue: 0,
 
+  // Slow descent - accuracy matters more than speed!
+  // Wrong answers make enemies jump down 80px
   levelConfig: [
-    { speed: 25, count: 3 },
-    { speed: 25, count: 4 },
-    { speed: 35, count: 5 },
-    { speed: 35, count: 5 },
-    { speed: 45, count: 6 },
-    { speed: 45, count: 5 },
-    { speed: 45, count: 5 },
-    { speed: 45, count: 7 },
-    { speed: 35, count: 5 },
-    { speed: 55, count: 8 },
+    { speed: 8, count: 3 },
+    { speed: 8, count: 4 },
+    { speed: 10, count: 5 },
+    { speed: 10, count: 5 },
+    { speed: 12, count: 6 },
+    { speed: 12, count: 5 },
+    { speed: 12, count: 5 },
+    { speed: 14, count: 7 },
+    { speed: 10, count: 5 },
+    { speed: 16, count: 8 },
   ],
 
   reset() {

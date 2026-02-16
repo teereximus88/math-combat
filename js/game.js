@@ -5,6 +5,7 @@ var Game = {
   wrongFlash: 0,
   levelCompleteTimer: 0,
   wavesPerLevel: 2,
+  paused: false,
 
   init: function () {
     Renderer.init();
@@ -28,6 +29,15 @@ var Game = {
       }
 
       if (self.state !== 'PLAYING') return;
+
+      // Space bar to pause/unpause
+      if (e.key === ' ') {
+        self.paused = !self.paused;
+        e.preventDefault();
+        return;
+      }
+
+      if (self.paused) return;
       if (self.levelCompleteTimer > 0) return;
 
       // Number keys
@@ -91,6 +101,10 @@ var Game = {
       this.wrongFlash = 0.25;
       Player.combo = 0;
       Audio.wrong();
+      // Wrong answer makes the targeted enemy jump down!
+      targeted.y += 80;
+      Particles.spawn(targeted.x, targeted.y, '#ff0000', 8);
+      Particles.shake(3);
     }
 
     Player.input = '';
@@ -117,6 +131,7 @@ var Game = {
     this.laser = null;
     this.wrongFlash = 0;
     this.levelCompleteTimer = 0;
+    this.paused = false;
     this.state = 'PLAYING';
     EnemyManager.startWave();
   },
@@ -135,6 +150,7 @@ var Game = {
     Renderer.updateStars(dt);
 
     if (this.state !== 'PLAYING') return;
+    if (this.paused) return;
 
     // Level complete countdown
     if (this.levelCompleteTimer > 0) {
@@ -254,6 +270,11 @@ var Game = {
     // Level complete overlay
     if (this.levelCompleteTimer > 0) {
       UI.drawLevelComplete(ctx, EnemyManager.level);
+    }
+
+    // Paused overlay
+    if (this.paused) {
+      UI.drawPaused(ctx);
     }
 
     // Game over overlay

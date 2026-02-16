@@ -108,9 +108,12 @@ var UI = {
     // Instructions
     ctx.fillStyle = '#8888aa';
     ctx.font = '16px monospace';
-    ctx.fillText('Type the answer to destroy aliens!', 400, 380);
-    ctx.fillText('TAB = switch targets    BACKSPACE = correct', 400, 405);
-    ctx.fillText('ENTER = submit answer', 400, 430);
+    ctx.fillText('Type the answer to destroy aliens!', 400, 370);
+    ctx.fillStyle = '#ff6666';
+    ctx.fillText('Wrong answers make aliens jump closer!', 400, 395);
+    ctx.fillStyle = '#8888aa';
+    ctx.fillText('TAB = switch targets    SPACE = pause', 400, 425);
+    ctx.fillText('BACKSPACE = correct    ENTER = submit', 400, 450);
 
     // Blinking start prompt
     var blink = Math.sin(Date.now() / 300) * 0.5 + 0.5;
@@ -189,5 +192,25 @@ var UI = {
       ctx.fillText(t.text, t.x, t.y);
     }
     ctx.globalAlpha = 1;
+  },
+
+  drawPaused: function (ctx) {
+    // Dark overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    ctx.fillRect(0, 0, 800, 600);
+
+    // Paused text
+    ctx.shadowColor = '#00d4ff';
+    ctx.shadowBlur = 15;
+    ctx.fillStyle = '#00d4ff';
+    ctx.font = 'bold 48px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('PAUSED', 400, 280);
+    ctx.shadowBlur = 0;
+
+    // Resume hint
+    ctx.fillStyle = '#aaaacc';
+    ctx.font = '20px monospace';
+    ctx.fillText('Press SPACE to resume', 400, 340);
   }
 };
